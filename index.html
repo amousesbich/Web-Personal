@@ -139,15 +139,17 @@
                             class="fa-brands fa-whatsapp"></i></a>
                 </div>
 
-                <!-- 
-                  Download CV Button
-                  - Zoom-out animation dengan delay terpanjang
-                  - Styling didefinisikan di CSS 
-                -->
-                <div class="btn" data-aos="zoom-out" data-aos-duration="1500" data-aos-delay="1800">
-                  <a href="https://github.com/your-repo" target="_blank">
-  <button>Download CV</button>
-</a>
+                <button onclick="downloadFile()">Download CV</button>
+
+<script>
+  function downloadFile() {
+    const link = document.createElement('a');
+    link.href = 'path/to/file.zip';
+    link.download = 'nama_file.zip';
+    link.click();
+  }
+</script>
+
                 </div>
             </div>
 
