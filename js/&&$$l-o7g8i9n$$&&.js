@@ -26,7 +26,7 @@ document.getElementById('loginForm').addEventListener('submit', function (e) {
 
     if (user) {
         // Jika login berhasil, arahkan ke halaman selanjutnya
-        window.location.href = 'https://s.id/modulvip'; // Ganti dengan halaman yang diinginkan
+        window.location.href = '/cit-27@$$$pb7222!.html'; // Ganti dengan halaman yang diinginkan
     } else {
         // Jika login gagal, tampilkan pesan kesalahan
         messageDiv.textContent = 'Kalo masukin yang bener kontol!';
