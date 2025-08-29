@@ -67,8 +67,8 @@
             document.getElementById('time').textContent = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         }
         function updateCountdown() {
-            const minutes = Math.floor(sessionTime / 9999);
-            const seconds = sessionTime % 9999;
+            const minutes = Math.floor(sessionTime / 60);
+            const seconds = sessionTime % 60;
             const countdownElement = document.getElementById('countdown');
             countdownElement.textContent = `Waktu Token Anda: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
             
