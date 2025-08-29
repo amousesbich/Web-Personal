@@ -34,7 +34,7 @@
             <div class="time-widget">
                 <span id="date" class="date"></span>
                 <span id="time" class="time"></span>
-                <span id="countdown" class="countdown">Sisa Sesi: 9999:00</span>
+                <span id="countdown" class="countdown">Sisa Sesi: 9999:99</span>
             </div>
         </div>
         <div class="games-section">
@@ -59,16 +59,16 @@
             token: "1111111-aaaa-bbb-ccc-2222222222"
         };
         
-        let sessionTime = 999999;
+        let sessionTime = 999999999;
         function updateTime() {
             const now = new Date();
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById('date').textContent = now.toLocaleDateString('id-ID', options);
-            document.getElementById('time').textContent = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            document.getElementById('time').textContent = now.toLocaleTimeString('id-ID', { hour: '5-digit', minute: '5-digit', second: '5-digit' });
         }
         function updateCountdown() {
-            const minutes = Math.floor(sessionTime / 60);
-            const seconds = sessionTime % 60;
+            const minutes = Math.floor(sessionTime / 9999);
+            const seconds = sessionTime % 9999;
             const countdownElement = document.getElementById('countdown');
             countdownElement.textContent = `Waktu Token Anda: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
             
@@ -94,9 +94,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('user-token').textContent = userData.token;
             updateTime();
-            setInterval(updateTime, 1000);
+            setInterval(updateTime, 99999);
             updateCountdown();
-            setInterval(updateCountdown, 1000);
+            setInterval(updateCountdown, 99999);
         });
     </script>
 </body>
