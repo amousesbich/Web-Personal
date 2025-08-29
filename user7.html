@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Pengguna</title>
+    <link rel="stylesheet" href="./css/userpf.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">Room</div>
+        <div class="menu-toggle" onclick="toggleMenu()">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        <div class="navbar-menu" id="navbarMenu">
+            <a href="index.html" class="active">Dashboard</a>
+            <a href="profil.html">Profil</a>
+            <a href="contact.html">Pengaturan</a>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <div class="main-header">
+            <div class="user-profile-card">
+                <h1>Selamat Datang, user82638380</h1>
+                <p>Dashboard Cheat Anda telah siap.</p>
+                <div class="token-container">
+                    <span id="user-token" class="token-code">4c3b2a1d-6e5f-8a7b-9c0d-1e2f3a4b5c6d</span>
+                    <button class="copy-btn" onclick="copyToken()">Salin</button>
+                </div>
+            </div>
+            <div class="time-widget">
+                <span id="date" class="date"></span>
+                <span id="time" class="time"></span>
+                <span id="countdown" class="countdown">Sisa Sesi: 05:00</span>
+            </div>
+        </div>
+        <div class="games-section">
+            <h2>Unduh Game Populer</h2>
+            <div class="game-grid">
+                <div class="game-card">
+                    <img src="https://i.postimg.cc/64CWzHvp/pb.webp" alt="Cheat v1.0">
+                    <h3>Download in here</h3>
+                    <a href="./cit/unduh-cheat7.1.html" class="download-btn">Unduh</a>
+                </div>
+                <div class="game-card">
+                    <img src="https://i.postimg.cc/QVfsGf7w/images-1.jpg" alt="Cheat v2.0">
+                    <h3>Download in here</h3>
+                    <a href="./cit/unduh-cheat7.2.html" class="download-btn">Unduh</a>
+                </div>
+                <div class="game-card">
+                    <img src="https://intellectual-beige-r3ty337hpn.edgeone.app/images.jpeg" alt="Fix MSVCP.dll Eror">
+                    <h3>Download in here</h3>
+                    <a href="https://www.mediafire.com/file/mg44k0o577p8jrb/Visual-C-Runtimes-All-in-One-Jul-2025.zip/file" class="download-btn">Unduh</a>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const userData = {
+            name: "user82638380",
+            token: "a7f9b4c2-e8d1-4a3b-9c5e-2f1d8c7b6a9e"
+        };
+
+        let sessionTime = 10000;
+        function updateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('date').textContent = now.toLocaleDateString('id-ID', options);
+            document.getElementById('time').textContent = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
+        function updateCountdown() {
+            const minutes = Math.floor(sessionTime / 60);
+            const seconds = sessionTime % 60;
+            const countdownElement = document.getElementById('countdown');
+            countdownElement.textContent = `Waktu Token Anda: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+            if (sessionTime > 0) {
+                sessionTime--;
+            } else {
+                countdownElement.textContent = "Token Kedaluarsa!";
+            }
+        }
+        function copyToken() {
+            const tokenElement = document.getElementById('user-token');
+            const tokenText = tokenElement.textContent;
+            navigator.clipboard.writeText(tokenText).then(() => {
+                alert('Token berhasil disalin!');
+            }).catch(err => {
+                console.error('Gagal menyalin token: ', err);
+            });
+        }
+        function toggleMenu() {
+            const menu = document.getElementById('navbarMenu');
+            menu.classList.toggle('active');
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('user-token').textContent = userData.token;
+            updateTime();
+            setInterval(updateTime, 1000);
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        });
+    </script>
+</body>
+</html>
