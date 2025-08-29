@@ -64,7 +64,7 @@
             const now = new Date();
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById('date').textContent = now.toLocaleDateString('id-ID', options);
-            document.getElementById('time').textContent = now.toLocaleTimeString('id-ID', { hour: '5-digit', minute: '5-digit', second: '5-digit' });
+            document.getElementById('time').textContent = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         }
         function updateCountdown() {
             const minutes = Math.floor(sessionTime / 9999);
