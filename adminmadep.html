@@ -71,7 +71,7 @@
             const seconds = sessionTime % 60;
             const countdownElement = document.getElementById('countdown');
             countdownElement.textContent = `Waktu Token Anda: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-            
+
             if (sessionTime > 0) {
                 sessionTime--;
             } else {
@@ -94,11 +94,10 @@
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('user-token').textContent = userData.token;
             updateTime();
-            setInterval(updateTime, 99999);
+            setInterval(updateTime, 1000);
             updateCountdown();
-            setInterval(updateCountdown, 99999);
+            setInterval(updateCountdown, 1000);
         });
     </script>
 </body>
 </html>
-
