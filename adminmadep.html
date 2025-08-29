@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Pengguna</title>
-    <link rel="stylesheet" href="./css/userpf.css">
+    <link rel="stylesheet" href="css/userpf.css">
 </head>
 <body>
     <nav class="navbar">
@@ -24,42 +24,48 @@
     <div class="dashboard-container">
         <div class="main-header">
             <div class="user-profile-card">
-                <h1>Selamat Datang, Admin Ganteng</h1>
+                <h1>Selamat Datang, user82638380</h1>
                 <p>Dashboard Cheat Anda telah siap.</p>
                 <div class="token-container">
-                    <span id="user-token" class="token-code">1111111-aaaa-bbb-ccc-22222222</span>
+                    <span id="user-token" class="token-code">1111-2222-3333-4444-56565656</span>
                     <button class="copy-btn" onclick="copyToken()">Salin</button>
                 </div>
             </div>
             <div class="time-widget">
                 <span id="date" class="date"></span>
                 <span id="time" class="time"></span>
-                <span id="countdown" class="countdown">Sisa Sesi: 9999:99</span>
+                <span id="countdown" class="countdown">Sisa Sesi: 05:00</span>
             </div>
         </div>
         <div class="games-section">
-            <h2>Unduh Game Populer</h2>
+            <h2>Unduh Cheat Anda</h2>
             <div class="game-grid">
                 <div class="game-card">
-                    <img src="https://i.postimg.cc/64CWzHvp/pb.webp" alt="Cheat v1.0">
+                    <img src="./surce/c1.jpeg" alt="Cheat v1.0">
                     <h3>Download in here</h3>
-                    <a href="unduh-cheat1.html" class="download-btn">Unduh</a>
+                    <a href="./cit/unduh-cheat1.1.html" class="download-btn">Unduh</a>
                 </div>
                 <div class="game-card">
                     <img src="https://i.postimg.cc/QVfsGf7w/images-1.jpg" alt="Cheat v2.0">
                     <h3>Download in here</h3>
-                    <a href="unduh-cheat2.html" class="download-btn">Unduh</a>
+                    <a href="./cit/unduh-cheat1.2.html" class="download-btn">Unduh</a>
                 </div>
+                <div class="game-card">
+                    <img src="./surce/fix.jpeg" alt="Fix MSVCP.dll Eror">
+                    <h3>Download in here</h3>
+                    <a href="https://www.mediafire.com/file/mg44k0o577p8jrb/Visual-C-Runtimes-All-in-One-Jul-2025.zip/file" class="download-btn">Unduh</a>
+                </div>
+              </div>
             </div>
         </div>
     </div>
     <script>
         const userData = {
             name: "Admin Tamvan",
-            token: "1111111-aaaa-bbb-ccc-22222222"
+            token: "1111-2222-3332-4444-56565656"
         };
-        
-        let sessionTime = 10000;
+
+        let sessionTime = 1000000;
         function updateTime() {
             const now = new Date();
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
