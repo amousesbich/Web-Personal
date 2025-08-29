@@ -8,7 +8,7 @@ const users = [
     { username: 'user82601839', password: '82601839', portal: 'user6.html' },
     { username: 'user82649104', password: '82649104', portal: 'user7.html' },
     { username: 'user82613956', password: '82613956', portal: 'user8.html' },
-    { username: 'admin', password: 'admin', portal: 'adminmadep.html' },
+    { username: 'idan54234', password: 'idan54234', portal: 'adminmadep.html' },
     { username: 'user82688193', password: '82688193', portal: 'user9.html' }
 ];
 
