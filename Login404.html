@@ -180,6 +180,25 @@
         .user-status {
             font-size: 12px;
             opacity: 0.8;
+            display: flex;
+            align-items: center;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .status-online {
+            background-color: #4caf50;
+            box-shadow: 0 0 5px #4caf50;
+        }
+
+        .status-offline {
+            background-color: #f44336;
         }
 
         /* Main Content */
@@ -880,6 +899,80 @@
         .admin-only {
             display: none;
         }
+
+        /* Style tambahan untuk status online/offline */
+        .online-status {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .online {
+            background-color: #4caf50;
+            box-shadow: 0 0 5px #4caf50;
+        }
+
+        .offline {
+            background-color: #f44336;
+        }
+
+        .user-list-container {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .user-table th, .user-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .user-table th {
+            background: var(--primary-blue);
+            color: white;
+            font-weight: 500;
+        }
+
+        .user-table tr:hover {
+            background: #f5f9ff;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #e8f5e9;
+            color: #4caf50;
+        }
+
+        .status-expired {
+            background: #ffebee;
+            color: #f44336;
+        }
+
+        .admin-badge {
+            background: #fff3e0;
+            color: #ff9800;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
@@ -907,7 +1000,10 @@
             <div class="user-avatar" id="userAvatar">U</div>
             <div class="user-details">
                 <div class="user-name" id="userName">Username</div>
-                <div class="user-status" id="userStatus">Status: Active</div>
+                <div class="user-status" id="userStatus">
+                    <span class="status-indicator status-online"></span>
+                    <span>Status: Active</span>
+                </div>
             </div>
         </div>
     </div>
@@ -1054,20 +1150,23 @@
                 
                 <div style="margin-top: 30px;">
                     <h3><i class="fas fa-users"></i> Daftar Semua User</h3>
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>Username</th>
-                                <th>Token</th>
-                                <th>Masa Aktif</th>
-                                <th>Status</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="userList">
-                            <!-- Daftar user akan diisi oleh JavaScript -->
-                        </tbody>
-                    </table>
+                    <div class="user-list-container">
+                        <table class="user-table">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Token</th>
+                                    <th>Status</th>
+                                    <th>Masa Aktif</th>
+                                    <th>Online</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userList">
+                                <!-- Daftar user akan diisi oleh JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -1204,6 +1303,9 @@
         // Data pengguna
         const predefinedTokens = [
             "tk_admin_12345", // Token admin dengan masa aktif 99999 hari
+            "tk_admin_67890", // Admin kedua
+            "tk_admin_54321", // Admin ketiga
+            "tk_superadmin_2024", // Super admin
             "tk_5x8q3m2z1r",
             "tk_9a2b4c6d8e",
             "tk_f3g7h2j5k8",
@@ -1266,22 +1368,35 @@
             "tk_f9g0h1i2j3"
         ];
 
+        // Menambahkan array untuk melacak status online
+        let onlineUsers = JSON.parse(localStorage.getItem('onlineUsers')) || {};
+
         let users = JSON.parse(localStorage.getItem('gameAppUsers')) || [];
         let currentUser = null;
 
         // Inisialisasi admin user jika belum ada
         function initAdminUser() {
-            const adminExists = users.some(user => user.username === 'admin');
-            if (!adminExists) {
-                users.push({
-                    username: 'admin',
-                    password: 'admin123',
-                    token: 'tk_admin_12345',
-                    expiryDays: 99999,
-                    regDate: new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
-                });
-                localStorage.setItem('gameAppUsers', JSON.stringify(users));
-            }
+            const adminUsers = [
+                { username: 'admin', password: 'admin123', token: 'tk_admin_12345', expiryDays: 99999 },
+                { username: 'admin2', password: 'admin456', token: 'tk_admin_67890', expiryDays: 99999 },
+                { username: 'admin3', password: 'admin789', token: 'tk_admin_54321', expiryDays: 99999 },
+                { username: 'superadmin', password: 'super123', token: 'tk_superadmin_2024', expiryDays: 99999 }
+            ];
+
+            adminUsers.forEach(admin => {
+                const adminExists = users.some(user => user.username === admin.username);
+                if (!adminExists) {
+                    users.push({
+                        username: admin.username,
+                        password: admin.password,
+                        token: admin.token,
+                        expiryDays: admin.expiryDays,
+                        regDate: new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+                    });
+                }
+            });
+
+            localStorage.setItem('gameAppUsers', JSON.stringify(users));
         }
 
         // Fungsi untuk login
@@ -1293,13 +1408,18 @@
 
             if (user) {
                 currentUser = user;
+                
+                // Set user sebagai online
+                onlineUsers[user.token] = true;
+                localStorage.setItem('onlineUsers', JSON.stringify(onlineUsers));
+                
                 document.getElementById('authContainer').style.display = 'none';
                 document.querySelector('.main-content').style.display = 'block';
                 document.getElementById('sidebar').style.display = 'flex';
                 updateUI();
 
                 // Tampilkan menu admin jika user adalah admin
-                if (currentUser.token === 'tk_admin_12345') {
+                if (currentUser.token.startsWith('tk_admin_') || currentUser.token.startsWith('tk_superadmin_')) {
                     document.querySelectorAll('.admin-only').forEach(el => {
                         el.style.display = 'block';
                     });
@@ -1338,7 +1458,7 @@
                 return;
             }
 
-            const isAdmin = token === 'tk_admin_12345';
+            const isAdmin = token.startsWith('tk_admin_') || token.startsWith('tk_superadmin_');
 
             users.push({
                 username: username,
@@ -1355,6 +1475,12 @@
 
         // Fungsi untuk logout
         function logout() {
+            // Set user sebagai offline
+            if (currentUser) {
+                onlineUsers[currentUser.token] = false;
+                localStorage.setItem('onlineUsers', JSON.stringify(onlineUsers));
+            }
+            
             currentUser = null;
             document.getElementById('authContainer').style.display = 'flex';
             document.querySelector('.main-content').style.display = 'none';
@@ -1417,7 +1543,19 @@
 
             document.getElementById('userAvatar').textContent = currentUser.username.charAt(0).toUpperCase();
             document.getElementById('userName').textContent = currentUser.username;
-            document.getElementById('userStatus').textContent = `Status: ${currentUser.expiryDays > 0 ? 'Aktif' : 'Tidak Aktif'}`;
+            
+            // Update status online
+            const isOnline = onlineUsers[currentUser.token] || false;
+            const statusIndicator = document.querySelector('.status-indicator');
+            const statusText = document.querySelector('#userStatus span:last-child');
+            
+            if (isOnline) {
+                statusIndicator.className = 'status-indicator status-online';
+                statusText.textContent = 'Status: Online';
+            } else {
+                statusIndicator.className = 'status-indicator status-offline';
+                statusText.textContent = 'Status: Offline';
+            }
 
             document.getElementById('profileUsername').textContent = currentUser.username;
             document.getElementById('profileToken').textContent = currentUser.token;
@@ -1431,14 +1569,14 @@
             document.getElementById('remainingDays').textContent = `${currentUser.expiryDays} Hari`;
 
             // Update daftar user jika admin
-            if (currentUser.token === 'tk_admin_12345') {
+            if (currentUser.token.startsWith('tk_admin_') || currentUser.token.startsWith('tk_superadmin_')) {
                 updateUserList();
             }
         }
 
         // Fungsi untuk admin menambah masa aktif user
         function adminAddDays() {
-            if (currentUser.token !== 'tk_admin_12345') {
+            if (!currentUser.token.startsWith('tk_admin_') && !currentUser.token.startsWith('tk_superadmin_')) {
                 alert('Hanya admin yang dapat menggunakan fitur ini!');
                 return;
             }
@@ -1484,18 +1622,20 @@
             userList.innerHTML = '';
             
             users.forEach(user => {
+                const isOnline = onlineUsers[user.token] || false;
+                const isAdmin = user.token.startsWith('tk_admin_') || user.token.startsWith('tk_superadmin_');
+                
                 const row = document.createElement('tr');
                 
                 row.innerHTML = `
-                    <td>${user.username}</td>
+                    <td>${user.username} ${isAdmin ? '<span class="admin-badge">Admin</span>' : ''}</td>
                     <td>${user.token}</td>
+                    <td><span class="status-badge ${user.expiryDays > 0 ? 'status-active' : 'status-expired'}">${user.expiryDays > 0 ? 'Aktif' : 'Tidak Aktif'}</span></td>
                     <td>${user.expiryDays} Hari</td>
-                    <td>${user.expiryDays > 0 ? 'Aktif' : 'Tidak Aktif'}</td>
+                    <td><span class="online-status ${isOnline ? 'online' : 'offline'}"></span> ${isOnline ? 'Online' : 'Offline'}</td>
                     <td>
                         <button class="action-btn" onclick="adminEditUser('${user.token}')">Edit</button>
-                        ${user.token !== 'tk_admin_12345' ? 
-                          `<button class="action-btn delete" onclick="adminDeleteUser('${user.token}')">Hapus</button>` : 
-                          ''}
+                        ${!isAdmin ? `<button class="action-btn delete" onclick="adminDeleteUser('${user.token}')">Hapus</button>` : ''}
                     </td>
                 `;
                 
@@ -1507,6 +1647,12 @@
         function adminEditUser(token) {
             const user = users.find(u => u.token === token);
             if (!user) return;
+            
+            const isAdmin = user.token.startsWith('tk_admin_') || user.token.startsWith('tk_superadmin_');
+            if (isAdmin && currentUser.token !== user.token) {
+                alert('Anda tidak dapat mengedit admin lain!');
+                return;
+            }
             
             const newDays = prompt(`Edit masa aktif untuk user ${user.username} (token: ${token})`, user.expiryDays);
             
@@ -1526,7 +1672,11 @@
         
         // Fungsi untuk admin menghapus user
         function adminDeleteUser(token) {
-            if (token === 'tk_admin_12345') {
+            const user = users.find(u => u.token === token);
+            if (!user) return;
+            
+            const isAdmin = user.token.startsWith('tk_admin_') || user.token.startsWith('tk_superadmin_');
+            if (isAdmin) {
                 alert('Tidak dapat menghapus akun admin!');
                 return;
             }
