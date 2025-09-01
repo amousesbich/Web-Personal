@@ -24,7 +24,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
@@ -33,6 +33,7 @@
             animation: gradientBG 15s ease infinite;
             color: #333;
             min-height: 100vh;
+            display: flex;
             position: relative;
             overflow-x: hidden;
         }
@@ -56,17 +57,15 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Layout utama */
-        .app-container {
-            display: flex;
-            min-height: 100vh;
-        }
-
         /* Sidebar Styles */
         .sidebar {
             width: var(--sidebar-width);
             background: var(--sidebar-gradient);
             color: white;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
             padding: 20px 0;
             display: flex;
             flex-direction: column;
@@ -114,6 +113,23 @@
             transition: all 0.3s ease;
             font-weight: 500;
             border-left: 4px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .nav-links a:hover::before {
+            left: 100%;
         }
 
         .nav-links a:hover, .nav-links a.active {
@@ -164,11 +180,31 @@
         .user-status {
             font-size: 12px;
             opacity: 0.8;
+            display: flex;
+            align-items: center;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .status-online {
+            background-color: #4caf50;
+            box-shadow: 0 0 5px #4caf50;
+        }
+
+        .status-offline {
+            background-color: #f44336;
         }
 
         /* Main Content */
         .main-content {
             flex: 1;
+            margin-left: var(--sidebar-width);
             padding: 20px;
             padding-top: 30px;
         }
@@ -234,7 +270,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Dashboard Styles */
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -249,6 +284,20 @@
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border-left: 5px solid var(--primary-blue);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+            transform: rotate(30deg);
+            pointer-events: none;
         }
 
         .card:hover {
@@ -274,6 +323,20 @@
             color: white;
             text-align: center;
             padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' width='100' height='100'%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='white' stroke-width='0.5' opacity='0.2'/%3E%3C/svg%3E");
+            background-size: 50px;
+            opacity: 0.3;
         }
 
         .status-card .days {
@@ -288,49 +351,100 @@
             opacity: 0.9;
         }
 
-        /* Auth Styles */
-        .auth-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: var(--neon-gradient);
-            width: 100%;
-            position: fixed;
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .feature {
+            background: linear-gradient(135deg, rgba(245, 249, 255, 0.8), rgba(227, 242, 253, 0.8));
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature::before {
+            content: '';
+            position: absolute;
             top: 0;
             left: 0;
-            z-index: 2000;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.5), transparent);
+            z-index: -1;
         }
 
-        .auth-box {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 40px;
-            width: 450px;
-            max-width: 90%;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2), 0 0 30px var(--glow-color);
+        .feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 0 15px rgba(0, 176, 255, 0.2);
         }
 
-        .auth-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .auth-logo {
-            font-size: 32px;
+        .feature i {
+            font-size: 36px;
             color: var(--primary-blue);
             margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(30, 136, 229, 0.3);
         }
 
-        .auth-title {
-            font-size: 24px;
-            font-weight: 600;
-            color: #333;
+        .feature h4 {
+            font-size: 18px;
             margin-bottom: 10px;
+            color: var(--dark-blue);
+        }
+
+        .profile-info {
+            margin-top: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            align-items: center;
+            transition: background 0.3s ease;
+            border-radius: 8px;
+        }
+
+        .info-item:hover {
+            background: rgba(187, 222, 251, 0.2);
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #555;
+            display: flex;
+            align-items: center;
+        }
+
+        .info-label i {
+            margin-right: 10px;
+            color: var(--primary-blue);
+        }
+
+        .info-value {
+            color: var(--dark-blue);
+            font-weight: 500;
+            background: rgba(240, 247, 255, 0.8);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
         }
 
         .form-group {
             margin-bottom: 25px;
+            position: relative;
         }
 
         .form-group label {
@@ -347,12 +461,13 @@
             border-radius: 10px;
             font-size: 16px;
             transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
         }
 
         .form-group input:focus {
             border-color: var(--primary-blue);
             outline: none;
-            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.2);
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.2), 0 0 15px var(--glow-color);
         }
 
         .btn {
@@ -368,44 +483,424 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
         }
 
         .btn:hover {
             background: linear-gradient(135deg, var(--dark-blue), var(--primary-blue));
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15), 0 0 15px var(--glow-color);
             transform: translateY(-2px);
         }
 
         .btn i {
             margin-right: 8px;
+            pointer-events: none;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .game-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15), 0 0 15px var(--glow-color);
+        }
+
+        .game-header {
+            padding: 20px;
+            background: var(--neon-gradient);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' width='100' height='100'%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='white' stroke-width='0.5' opacity='0.2'/%3E%3C/svg%3E");
+            background-size: 50px;
+            opacity: 0.3;
+        }
+
+        .game-body {
+            padding: 25px;
+        }
+
+        .game-image {
+            height: 180px;
+            background: var(--neon-gradient);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' width='100' height='100'%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='white' stroke-width='0.5' opacity='0.2'/%3E%3C/svg%3E");
+            background-size: 50px;
+            opacity: 0.3;
+        }
+
+        .game-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+         .game-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: var(--neon-gradient);
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 2000;
+        }
+
+        .auth-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            width: 450px;
+            max-width: 90%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2), 0 0 30px var(--glow-color);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+            transform: rotate(30deg);
+            pointer-events: none;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-logo {
+            font-size: 32px;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(30, 136, 229, 0.3);
+        }
+
+        .auth-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            cursor: pointer;
+            color: #999;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .auth-tab.active {
+            color: var(--primary-blue);
+        }
+
+        .auth-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--neon-gradient);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Mobile menu button */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--primary-blue);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1100;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2), 0 0 10px var(--glow-color);
+        }
+
+        /* Responsive styles */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding-top: 80px;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .game-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .date-time {
+                align-items: center;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .rgb-border {
+            position: relative;
+            padding: 3px;
+            border-radius: 15px;
+            background: var(--neon-gradient);
+            background-size: 300% 300%;
+            animation: rgbAnimation 4s ease infinite;
+        }
+
+        .rgb-border > div {
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        @keyframes rgbAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .full-width {
             width: 100%;
         }
 
-        /* Responsive styles */
-        @media (max-width: 992px) {
-            .app-container {
-                flex-direction: column;
+        .password-reset-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
             }
-            
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
+            10% {
+                opacity: 1;
             }
-            
-            .main-content {
-                padding-top: 20px;
+            90% {
+                opacity: 1;
             }
-            
-            .dashboard-grid {
-                grid-template-columns: 1fr;
+            100% {
+                transform: translateY(-100vh) translateX(100vw);
+                opacity: 0;
             }
         }
 
-        /* Status indicator */
+        /* Style untuk panel admin */
+        .admin-panel {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .admin-form {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(245, 249, 255, 0.8), rgba(227, 242, 253, 0.8));
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .admin-table th, .admin-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .admin-table th {
+            background: var(--primary-blue);
+            color: white;
+            font-weight: 500;
+        }
+
+        .admin-table tr:hover {
+            background: #f5f9ff;
+        }
+
+        .action-btn {
+            padding: 8px 12px;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 5px;
+            font-size: 12px;
+        }
+
+        .action-btn.delete {
+            background: #f44336;
+        }
+
+        .admin-only {
+            display: none;
+        }
+
+        /* Style tambahan untuk status online/offline */
         .online-status {
             display: inline-block;
             width: 8px;
@@ -422,140 +917,315 @@
         .offline {
             background-color: #f44336;
         }
+
+        .user-list-container {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .user-table th, .user-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .user-table th {
+            background: var(--primary-blue);
+            color: white;
+            font-weight: 500;
+        }
+
+        .user-table tr:hover {
+            background: #f5f9ff;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #e8f5e9;
+            color: #4caf50;
+        }
+
+        .status-expired {
+            background: #ffebee;
+            color: #f44336;
+        }
+
+        .admin-badge {
+            background: #fff3e0;
+            color: #ff9800;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="logo-container">
-                <div class="logo"><i class="fas fa-gamepad"></i>Vvip Cheat</div>
-            </div>
+    <div class="floating-particles" id="particles"></div>
 
-            <ul class="nav-links">
-                <li><a href="#dashboard" class="nav-link active"><i class="fas fa-home"></i> Dashboard</a></li>
-                <li><a href="#profile" class="nav-link"><i class="fas fa-user"></i> Profil</a></li>
-                <li><a href="#settings" class="nav-link"><i class="fas fa-cog"></i> Pengaturan</a></li>
-                <li><a href="#download" class="nav-link"><i class="fas fa-download"></i> Download Cheat</a></li>
-                <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Keluar</a></li>
-            </ul>
+    <div class="menu-toggle" id="menuToggle">
+        <i class="fas fa-bars"></i>
+    </div>
 
-            <div class="user-profile">
-                <div class="user-avatar" id="userAvatar">U</div>
-                <div class="user-details">
-                    <div class="user-name" id="userName">Username</div>
-                    <div class="user-status" id="userStatus">
-                        <span class="online-status online"></span>
-                        <span>Status: Active</span>
-                    </div>
+    <div class="sidebar" id="sidebar">
+        <div class="logo-container">
+            <div class="logo"><i class="fas fa-gamepad"></i>Vvip Cheat</div>
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="#dashboard" class="nav-link active"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="#profile" class="nav-link"><i class="fas fa-user"></i> Profil</a></li>
+            <li><a href="#settings" class="nav-link"><i class="fas fa-cog"></i> Pengaturan</a></li>
+            <li class="admin-only" id="adminMenuItem"><a href="#admin" class="nav-link"><i class="fas fa-user-shield"></i> Admin Panel</a></li>
+            <li><a href="#download" class="nav-link"><i class="fas fa-download"></i> Download Cheat</a></li>
+            <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Keluar</a></li>
+        </ul>
+
+        <div class="user-profile">
+            <div class="user-avatar" id="userAvatar">U</div>
+            <div class="user-details">
+                <div class="user-name" id="userName">Username</div>
+                <div class="user-status" id="userStatus">
+                    <span class="status-indicator status-online"></span>
+                    <span>Status: Active</span>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <div class="header">
-                <h1 class="page-title" id="pageTitle">Dashboard</h1>
-                <div class="date-time">
-                    <div id="currentDate">Senin, 01 Jan 2023</div>
-                    <div id="currentTime">00:00:00</div>
+    <div class="main-content">
+        <div class="header">
+            <h1 class="page-title" id="pageTitle">Dashboard</h1>
+            <div class="date-time">
+                <div id="currentDate">Senin, 01 Jan 2023</div>
+                <div id="currentTime">00:00:00</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="section active" id="dashboard">
+                <h2><i class="fas fa-home"></i> Dashboard</h2>
+                <div class="dashboard-grid">
+                    <div class="card status-card">
+                        <i class="fas fa-calendar-check"></i>
+                        <div class="days" id="remainingDays">1 Hari</div>
+                        <div class="label">Masa Aktif Tersisa</div>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-gamepad"></i> Update Cheat</h3>
+                        <p>Cheat Update Tanggal 31 Agustus.</p>
+                        <button class="btn" style="margin-top: 15px;" onclick="showSection('download')">
+                            <i class="fas fa-arrow-right"></i> Lihat Cheat
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-crown"></i> Status Keanggotaan</h3>
+                        <p>Akun Anda saat ini memiliki status <strong>Regular Member</strong>.</p>
+                        <p>Hubungi admin untuk memperpanjang masa aktif.</p>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px;">Fitur Utama</h3>
+                <div class="feature-grid">
+                    <div class="feature">
+                        <i class="fas fa-download"></i>
+                        <h4>Download File Cheat</h4>
+                        <p>Download Cheat Anda dan nikmati Game play anda.</p>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-user-clock"></i>
+                        <h4>Masa Aktif</h4>
+                        <p>Pantau sisa masa aktif akun Anda</p>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-key"></i>
+                        <h4>Token Aman</h4>
+                        <p>Kelola token untuk keamanan akun</p>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-sliders-h"></i>
+                        <h4>Pengaturan</h4>
+                        <p>Personalisasi pengalaman bermain game Anda</p>
+                    </div>
                 </div>
             </div>
 
-            <div class="content">
-                <!-- Dashboard Section -->
-                <div class="section active" id="dashboard">
-                    <h2><i class="fas fa-home"></i> Dashboard</h2>
-                    <div class="dashboard-grid">
-                        <div class="card status-card">
-                            <i class="fas fa-calendar-check"></i>
-                            <div class="days" id="remainingDays">1 Hari</div>
-                            <div class="label">Masa Aktif Tersisa</div>
-                        </div>
-
-                        <div class="card">
-                            <h3><i class="fas fa-gamepad"></i> Update Cheat</h3>
-                            <p>Cheat Update Tanggal 31 Agustus.</p>
-                            <button class="btn" style="margin-top: 15px;" onclick="showSection('download')">
-                                <i class="fas fa-arrow-right"></i> Lihat Cheat
-                            </button>
-                        </div>
-
-                        <div class="card">
-                            <h3><i class="fas fa-crown"></i> Status Keanggotaan</h3>
-                            <p>Akun Anda saat ini memiliki status <strong>Regular Member</strong>.</p>
-                            <p>Hubungi admin untuk memperpanjang masa aktif.</p>
-                        </div>
+            <div class="section" id="profile">
+                <h2><i class="fas fa-user"></i> Profil Pengguna</h2>
+                <div class="profile-info">
+                    <div class="info-item">
+                        <span class="info-label"><i class="fas fa-user"></i> Username:</span>
+                        <span class="info-value" id="profileUsername">user123</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fas fa-key"></i> Token:</span>
+                        <span class="info-value" id="profileToken">tk_5x8q3m2z1r</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fas fa-calendar"></i> Masa Aktif:</span>
+                        <span class="info-value" id="profileExpiry">1 Hari</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fas fa-check-circle"></i> Status Akun:</span>
+                        <span class="info-value" id="profileStatus">Aktif</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label"><i class="fas fa-calendar-plus"></i> Tanggal Registrasi:</span>
+                        <span class="info-value" id="profileRegDate">01 Jan 2023</span>
                     </div>
                 </div>
+            </div>
 
-                <!-- Profile Section -->
-                <div class="section" id="profile">
-                    <h2><i class="fas fa-user"></i> Profil Pengguna</h2>
-                    <div class="profile-info">
-                        <div class="info-item">
-                            <span class="info-label"><i class="fas fa-user"></i> Username:</span>
-                            <span class="info-value" id="profileUsername">user123</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label"><i class="fas fa-key"></i> Token:</span>
-                            <span class="info-value" id="profileToken">tk_5x8q3m2z1r</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label"><i class="fas fa-calendar"></i> Masa Aktif:</span>
-                            <span class="info-value" id="profileExpiry">1 Hari</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label"><i class="fas fa-check-circle"></i> Status Akun:</span>
-                            <span class="info-value" id="profileStatus">Aktif</span>
-                        </div>
-                    </div>
+            <div class="section" id="settings">
+                <h2><i class="fas fa-cog"></i> Pengaturan</h2>
+                <div class="form-group">
+                    <label for="settingsUsername">Username</label>
+                    <input type="text" id="settingsUsername" placeholder="Username">
                 </div>
+                <div class="form-group">
+                    <label for="settingsToken">Token</label>
+                    <input type="text" id="settingsToken" placeholder="Token">
+                </div>
+                <button class="btn" onclick="saveSettings()">
+                    <i class="fas fa-save"></i> Simpan Pengaturan
+                </button>
 
-                <!-- Settings Section -->
-                <div class="section" id="settings">
-                    <h2><i class="fas fa-cog"></i> Pengaturan</h2>
+                <div class="password-reset-section">
+                    <h3><i class="fas fa-unlock-alt"></i> Reset Password</h3>
+                    <p>Reset password Anda dengan menggunakan token yang valid.</p>
+
                     <div class="form-group">
-                        <label for="settingsUsername">Username</label>
-                        <input type="text" id="settingsUsername" placeholder="Username">
+                        <label for="resetToken">Token</label>
+                        <input type="text" id="resetToken" placeholder="Masukkan token Anda">
                     </div>
                     <div class="form-group">
-                        <label for="settingsToken">Token</label>
-                        <input type="text" id="settingsToken" placeholder="Token">
+                        <label for="newPassword">Password Baru</label>
+                        <input type="password" id="newPassword" placeholder="Masukkan password baru">
                     </div>
-                    <button class="btn" onclick="saveSettings()">
-                        <i class="fas fa-save"></i> Simpan Pengaturan
+                    <div class="form-group">
+                        <label for="confirmPassword">Konfirmasi Password Baru</label>
+                        <input type="password" id="confirmPassword" placeholder="Konfirmasi password baru">
+                    </div>
+                    <button class="btn" onclick="resetPassword()">
+                        <i class="fas fa-sync-alt"></i> Reset Password
                     </button>
                 </div>
+            </div>
 
-                <!-- Download Section -->
-                <div class="section" id="download">
-                    <h2><i class="fas fa-download"></i>Download Cheat</h2>
-                    <p>Pilih Cheat favorit Anda dan unduh untuk pengalaman bermain yang seru.</p>
+            <div class="section admin-only" id="admin">
+                <h2><i class="fas fa-user-shield"></i> Panel Admin</h2>
+                <p>Kelola masa aktif semua user dengan menggunakan token mereka.</p>
+                
+                <div class="admin-form">
+                    <h3><i class="fas fa-plus-circle"></i> Tambah Masa Aktif User</h3>
+                    <div class="form-group">
+                        <label for="adminUserToken">Token User</label>
+                        <input type="text" id="adminUserToken" placeholder="Masukkan token user">
+                    </div>
+                    <div class="form-group">
+                        <label for="adminAddDays">Jumlah Hari</label>
+                        <input type="number" id="adminAddDays" placeholder="Jumlah hari yang ditambahkan" min="1">
+                    </div>
+                    <button class="btn" onclick="adminAddDays()">
+                        <i class="fas fa-plus"></i> Tambah Masa Aktif
+                    </button>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <h3><i class="fas fa-users"></i> Daftar Semua User</h3>
+                    <div class="user-list-container">
+                        <table class="user-table">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Token</th>
+                                    <th>Status</th>
+                                    <th>Masa Aktif</th>
+                                    <th>Online</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userList">
+                                <!-- Daftar user akan diisi oleh JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 
-                    <div class="game-grid">
-                        <div class="card">
-                            <h3><i class="fas fa-download"></i> Cheat V1.1 Last Update</h3>
+            <div class="section" id="download">
+                <h2><i class="fas fa-download"></i>Download Cheat</h2>
+                <p>Pilih Cheat favorit Anda dan unduh untuk pengalaman bermain yang seru.</p>
+
+                <div class="game-grid">
+                    <div class="game-card">
+                        <div class="game-header">
+                            <h3>Cheat V1.1 Last Update</h3>
+                        </div>
+                        <div class="game-body">
+                            <div class="game-image">
+                                <img src="./surce/c1.jpeg" onerror="this.src='https://via.placeholder.com/300x180/1e88e5/ffffff?text=Cheat+V1.1'">
+                            </div>
                             <p>Cheat yang berbeda dari Cheat Gratis.</p>
-                            <a href="https://amosesbich.github.io/Web-personal/cit-27@$$$pb7222!.html" class="btn" style="margin-top: 15px;">
-                                <i class="fas fa-download"></i> Download
-                            </a>
+                            <div class="game-actions">
+                                <button class="btn btn-outline"><i class="fas fa-info"></i> Info</button>
+                                <a href="https://amosesbich.github.io/Web-personal/cit-27@$$$pb7222!.html" class="btn">
+                                    <i class="fas fa-download"></i> Download
+                                </a>
+                            </div>
                         </div>
+                    </div>
 
-                        <div class="card">
-                            <h3><i class="fas fa-download"></i> Cheat V2.2 Last Update</h3>
+                    <div class="game-card">
+                        <div class="game-header">
+                            <h3>Cheat V2.2 Last Update</h3>
+                        </div>
+                        <div class="game-body">
+                            <div class="game-image">
+                                <img src="./surce/c2.jpeg" onerror="this.src='https://via.placeholder.com/300x180/2196f3/ffffff?text=Cheat+V2.2'">
+                            </div>
                             <p>Cheat lebih praktis</p>
-                            <a href="./cit-27@$$$pb7222!.html" class="btn" style="margin-top: 15px;">
-                                <i class="fas fa-download"></i> Download
-                            </a>
+                            <div class="game-actions">
+                                <button class="btn btn-outline"><i class="fas fa-info"></i> Info</button>
+                                <a href="./cit-27@$$$pb7222!.html" class="btn">
+                                    <i class="fas fa-download"></i> Download
+                                </a>
+                            </div>
                         </div>
+                    </div>
 
-                        <div class="card">
-                            <h3><i class="fas fa-download"></i> Update Visual C++</h3>
+                    <div class="game-card">
+                        <div class="game-header">
+                            <h3>Update Visual C++</h3>
+                        </div>
+                        <div class="game-body">
+                            <div class="game-image">
+                                <img src="./surce/fix.jpeg" onerror="this.src='https://via.placeholder.com/300x180/0d47a1/ffffff?text=VC+++Update'">
+                            </div>
                             <p>Jika Saat Anda Run/menjalankan cheat ada tulisan seperti di atas, Anda harus meng update vc++.</p>
-                            <a href="https://www.mediafire.com/file/mg44k0o577p8jrb/Visual-C-Runtimes-All-in-One-Jul-2025.zip/file" download="Visual-C.zip" class="btn" style="margin-top: 15px;">
-                                <i class="fas fa-download"></i> Download
-                            </a>
+                            <div class="game-actions">
+                                <button class="btn btn-outline"><i class="fas fa-info"></i> Info</button>
+                                <a href="https://www.mediafire.com/file/mg44k0o577p8jrb/Visual-C-Runtimes-All-in-One-Jul-2025.zip/file" download="Visual-C.zip" class="btn">
+                                    <i class="fas fa-download"></i> Download
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -563,7 +1233,6 @@
         </div>
     </div>
 
-    <!-- Auth Container (akan disembunyikan setelah login) -->
     <div class="auth-container" id="authContainer">
         <div class="auth-box">
             <div class="auth-header">
@@ -571,17 +1240,62 @@
                 <div class="auth-title">Selamat Datang</div>
             </div>
 
-            <div class="form-group">
-                <label for="loginUsername">Username</label>
-                <input type="text" id="loginUsername" placeholder="Masukkan username" value="admin">
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="loginTab">Login</div>
+                <div class="auth-tab" id="registerTab">Daftar</div>
             </div>
-            <div class="form-group">
-                <label for="loginPassword">Password</label>
-                <input type="password" id="loginPassword" placeholder="Masukkan password" value="admin123">
-            </div>
-            <button class="btn full-width" onclick="login()">
-                <i class="fas fa-sign-in-alt"></i> Masuk
-            </button>
+
+            <form class="auth-form active" id="loginForm">
+                <div class="form-group">
+                    <label for="loginUsername">Username</label>
+                    <input type="text" id="loginUsername" placeholder="Masukkan username">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="Masukkan password">
+                </div>
+                <div style="text-align: right; margin-top: 10px;">
+                    <a href="#" style="color: var(--primary-blue); font-size: 14px; text-decoration: none;" onclick="showForgotPasswordForm()">Lupa Password?</a>
+                </div>
+                <button type="button" class="btn full-width" onclick="login()">
+                    <i class="fas fa-sign-in-alt"></i> Masuk
+                </button>
+            </form>
+
+            <form class="auth-form" id="registerForm">
+                <div class="form-group">
+                    <label for="registerUsername">Username</label>
+                    <input type="text" id="registerUsername" placeholder="Buat username">
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password</label>
+                    <input type="password" id="registerPassword" placeholder="Buat password">
+                </div>
+                <div class="form-group">
+                    <label for="registerToken">Token</label>
+                    <input type="text" id="registerToken" placeholder="Masukkan token">
+                </div>
+                <button type="button" class="btn full-width" onclick="register()">
+                    <i class="fas fa-user-plus"></i> Daftar
+                </button>
+            </form>
+
+            <form class="auth-form" id="forgotPasswordForm">
+                <div class="form-group">
+                    <label for="forgotToken">Token</label>
+                    <input type="text" id="forgotToken" placeholder="Masukkan token Anda">
+                </div>
+                <div class="form-group">
+                    <label for="newPasswordForgot">Password Baru</label>
+                    <input type="password" id="newPasswordForgot" placeholder="Masukkan password baru">
+                </div>
+                <button type="button" class="btn full-width" onclick="forgotPassword()">
+                    <i class="fas fa-sync-alt"></i> Reset Password
+                </button>
+                <div style="text-align: center; margin-top: 15px;">
+                    <a href="#" style="color: #666; font-size: 14px; text-decoration: none;" onclick="switchToLogin()">Kembali ke Login</a>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -593,25 +1307,96 @@
             "tk_admin_54321", // Admin ketiga
             "tk_superadmin_2024", // Super admin
             "tk_5x8q3m2z1r",
-            "tk_9a2b4c6d8e"
+            "tk_9a2b4c6d8e",
+            "tk_f3g7h2j5k8",
+            "tk_m1n4p7q0r3",
+            "tk_s6t9v2w5y8",
+            "tk_z1x4c7v0b3",
+            "tk_l2k5j8h1b4",
+            "tk_p0o9i8u7y6",
+            "tk_r5t2y1u8i9",
+            "tk_e3w4q5r6t7",
+            "tk_a1b2c3d4e5",
+            "tk_f6g7h8i9j0",
+            "tk_k1l2m3n4o5",
+            "tk_p6q7r8s9t0",
+            "tk_u1v2w3x4y5",
+            "tk_z6a7b8c9d0",
+            "tk_e1f2g3h4i5",
+            "tk_j6k7l8m9n0",
+            "tk_o1p2q3r4s5",
+            "tk_t6u7v8w9x0",
+            "tk_1a2b3c4d5e",
+            "tk_6f7g8h9i0j",
+            "tk_1k2l3m4n5o",
+            "tk_6p7q8r9s0t",
+            "tk_1u2v3w4x5y",
+            "tk_6z7a8b9c0d",
+            "tk_a1b2c3d4e6",
+            "tk_f7g8h9i0j1",
+            "tk_k2l3m4n5o6",
+            "tk_p7q8r9s0t1",
+            "tk_u2v3w4x5y6",
+            "tk_z7a8b9c0d1",
+            "tk_e2f3g4h5i6",
+            "tk_j7k8l9m0n1",
+            "tk_o2p3q4r5s6",
+            "tk_t7u8v9w0x1",
+            "tk_1a2b3c4d5f",
+            "tk_6g7h8i9j0k",
+            "tk_1l2m3n4o5p",
+            "tk_6q7r8s9t0u",
+            "tk_1v2w3x4y5z",
+            "tk_6a7b8c9d0e",
+            "tk_a2b3c4d5e6",
+            "tk_f8g9h0i1j2",
+            "tk_k3l4m5n6o7",
+            "tk_p8q9r0s1t2",
+            "tk_u3v4w5x6y7",
+            "tk_z8a9b0c1d2",
+            "tk_e3f4g5h6i7",
+            "tk_j8k9l0m1n2",
+            "tk_o3p4q5r6s7",
+            "tk_t8u9v0w1x2",
+            "tk_1a2b3c4d5g",
+            "tk_6h7i8j9k0l",
+            "tk_1m2n3o4p5q",
+            "tk_6r7s8t9u0v",
+            "tk_1w2x3y4z5a",
+            "tk_6b7c8d9e0f",
+            "tk_a3b4c5d6e7",
+            "tk_f9g0h1i2j3"
         ];
+
+        // Menambahkan array untuk melacak status online
+        let onlineUsers = JSON.parse(localStorage.getItem('onlineUsers')) || {};
 
         let users = JSON.parse(localStorage.getItem('gameAppUsers')) || [];
         let currentUser = null;
 
         // Inisialisasi admin user jika belum ada
         function initAdminUser() {
-            const adminExists = users.some(user => user.username === 'admin');
-            if (!adminExists) {
-                users.push({
-                    username: 'admin',
-                    password: 'admin123',
-                    token: 'tk_admin_12345',
-                    expiryDays: 99999,
-                    regDate: new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
-                });
-                localStorage.setItem('gameAppUsers', JSON.stringify(users));
-            }
+            const adminUsers = [
+                { username: 'admin', password: 'admin123', token: 'tk_admin_12345', expiryDays: 99999 },
+                { username: 'admin2', password: 'admin456', token: 'tk_admin_67890', expiryDays: 99999 },
+                { username: 'admin3', password: 'admin789', token: 'tk_admin_54321', expiryDays: 99999 },
+                { username: 'superadmin', password: 'super123', token: 'tk_superadmin_2024', expiryDays: 99999 }
+            ];
+
+            adminUsers.forEach(admin => {
+                const adminExists = users.some(user => user.username === admin.username);
+                if (!adminExists) {
+                    users.push({
+                        username: admin.username,
+                        password: admin.password,
+                        token: admin.token,
+                        expiryDays: admin.expiryDays,
+                        regDate: new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+                    });
+                }
+            });
+
+            localStorage.setItem('gameAppUsers', JSON.stringify(users));
         }
 
         // Fungsi untuk login
@@ -623,19 +1408,133 @@
 
             if (user) {
                 currentUser = user;
+                
+                // Set user sebagai online
+                onlineUsers[user.token] = true;
+                localStorage.setItem('onlineUsers', JSON.stringify(onlineUsers));
+                
                 document.getElementById('authContainer').style.display = 'none';
+                document.querySelector('.main-content').style.display = 'block';
+                document.getElementById('sidebar').style.display = 'flex';
                 updateUI();
+
+                // Tampilkan menu admin jika user adalah admin
+                if (currentUser.token.startsWith('tk_admin_') || currentUser.token.startsWith('tk_superadmin_')) {
+                    document.querySelectorAll('.admin-only').forEach(el => {
+                        el.style.display = 'block';
+                    });
+                }
+
+                // Create floating particles
+                createParticles();
             } else {
                 alert('Username atau password salah!');
             }
         }
 
+        // Fungsi untuk registrasi
+        function register() {
+            const username = document.getElementById('registerUsername').value;
+            const password = document.getElementById('registerPassword').value;
+            const token = document.getElementById('registerToken').value;
+
+            if (!username || !password || !token) {
+                alert('Semua field harus diisi!');
+                return;
+            }
+
+            if (users.some(u => u.username === username)) {
+                alert('Username sudah digunakan!');
+                return;
+            }
+
+            if (!predefinedTokens.includes(token)) {
+                alert('Token tidak valid!');
+                return;
+            }
+
+            if (users.some(u => u.token === token)) {
+                alert('Token sudah digunakan!');
+                return;
+            }
+
+            const isAdmin = token.startsWith('tk_admin_') || token.startsWith('tk_superadmin_');
+
+            users.push({
+                username: username,
+                password: password,
+                token: token,
+                expiryDays: isAdmin ? 99999 : 1,
+                regDate: new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+            });
+
+            localStorage.setItem('gameAppUsers', JSON.stringify(users));
+            alert('Registrasi berhasil! Silakan login.');
+            switchToLogin();
+        }
+
         // Fungsi untuk logout
         function logout() {
+            // Set user sebagai offline
+            if (currentUser) {
+                onlineUsers[currentUser.token] = false;
+                localStorage.setItem('onlineUsers', JSON.stringify(onlineUsers));
+            }
+            
             currentUser = null;
             document.getElementById('authContainer').style.display = 'flex';
+            document.querySelector('.main-content').style.display = 'none';
+            document.getElementById('sidebar').style.display = 'none';
             document.getElementById('loginUsername').value = '';
             document.getElementById('loginPassword').value = '';
+
+            // Sembunyikan menu admin
+            document.querySelectorAll('.admin-only').forEach(el => {
+                el.style.display = 'none';
+            });
+
+            // Remove particles
+            const particles = document.getElementById('particles');
+            particles.innerHTML = '';
+        }
+
+        // Fungsi untuk reset password
+        function resetPassword() {
+            const token = document.getElementById('resetToken').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (!token || !newPassword || !confirmPassword) {
+                alert('Semua field harus diisi!');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                alert('Password baru dan konfirmasi password tidak cocok!');
+                return;
+            }
+
+            if (token !== currentUser.token) {
+                alert('Token tidak valid!');
+                return;
+            }
+
+            // Update password
+            currentUser.password = newPassword;
+
+            // Update in users array
+            const userIndex = users.findIndex(u => u.username === currentUser.username);
+            if (userIndex !== -1) {
+                users[userIndex] = currentUser;
+                localStorage.setItem('gameAppUsers', JSON.stringify(users));
+            }
+
+            alert('Password berhasil direset!');
+
+            // Clear form
+            document.getElementById('resetToken').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
         }
 
         // Fungsi untuk memperbarui UI berdasarkan user yang login
@@ -644,17 +1543,150 @@
 
             document.getElementById('userAvatar').textContent = currentUser.username.charAt(0).toUpperCase();
             document.getElementById('userName').textContent = currentUser.username;
-            document.getElementById('userStatus').innerHTML = `<span class="online-status online"></span> Status: ${currentUser.expiryDays > 0 ? 'Aktif' : 'Tidak Aktif'}`;
+            
+            // Update status online
+            const isOnline = onlineUsers[currentUser.token] || false;
+            const statusIndicator = document.querySelector('.status-indicator');
+            const statusText = document.querySelector('#userStatus span:last-child');
+            
+            if (isOnline) {
+                statusIndicator.className = 'status-indicator status-online';
+                statusText.textContent = 'Status: Online';
+            } else {
+                statusIndicator.className = 'status-indicator status-offline';
+                statusText.textContent = 'Status: Offline';
+            }
 
             document.getElementById('profileUsername').textContent = currentUser.username;
             document.getElementById('profileToken').textContent = currentUser.token;
             document.getElementById('profileExpiry').textContent = `${currentUser.expiryDays} Hari`;
             document.getElementById('profileStatus').textContent = currentUser.expiryDays > 0 ? 'Aktif' : 'Tidak Aktif';
+            document.getElementById('profileRegDate').textContent = currentUser.regDate;
 
             document.getElementById('settingsUsername').value = currentUser.username;
             document.getElementById('settingsToken').value = currentUser.token;
 
             document.getElementById('remainingDays').textContent = `${currentUser.expiryDays} Hari`;
+
+            // Update daftar user jika admin
+            if (currentUser.token.startsWith('tk_admin_') || currentUser.token.startsWith('tk_superadmin_')) {
+                updateUserList();
+            }
+        }
+
+        // Fungsi untuk admin menambah masa aktif user
+        function adminAddDays() {
+            if (!currentUser.token.startsWith('tk_admin_') && !currentUser.token.startsWith('tk_superadmin_')) {
+                alert('Hanya admin yang dapat menggunakan fitur ini!');
+                return;
+            }
+            
+            const userToken = document.getElementById('adminUserToken').value;
+            const daysToAdd = parseInt(document.getElementById('adminAddDays').value);
+            
+            if (!userToken || isNaN(daysToAdd) || daysToAdd <= 0) {
+                alert('Masukkan token user dan jumlah hari yang valid!');
+                return;
+            }
+            
+            const user = users.find(u => u.token === userToken);
+            if (!user) {
+                alert('User dengan token tersebut tidak ditemukan!');
+                return;
+            }
+            
+            user.expiryDays += daysToAdd;
+            
+            // Update di localStorage
+            localStorage.setItem('gameAppUsers', JSON.stringify(users));
+            
+            alert(`Berhasil menambahkan ${daysToAdd} hari untuk user dengan token ${userToken}. Masa aktif sekarang: ${user.expiryDays} hari.`);
+            
+            // Reset form
+            document.getElementById('adminUserToken').value = '';
+            document.getElementById('adminAddDays').value = '';
+            
+            // Update daftar user
+            updateUserList();
+            
+            // Jika user yang sedang login diupdate, refresh UI
+            if (currentUser.token === userToken) {
+                currentUser.expiryDays = user.expiryDays;
+                updateUI();
+            }
+        }
+        
+        // Fungsi untuk mengupdate daftar user di admin panel
+        function updateUserList() {
+            const userList = document.getElementById('userList');
+            userList.innerHTML = '';
+            
+            users.forEach(user => {
+                const isOnline = onlineUsers[user.token] || false;
+                const isAdmin = user.token.startsWith('tk_admin_') || user.token.startsWith('tk_superadmin_');
+                
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${user.username} ${isAdmin ? '<span class="admin-badge">Admin</span>' : ''}</td>
+                    <td>${user.token}</td>
+                    <td><span class="status-badge ${user.expiryDays > 0 ? 'status-active' : 'status-expired'}">${user.expiryDays > 0 ? 'Aktif' : 'Tidak Aktif'}</span></td>
+                    <td>${user.expiryDays} Hari</td>
+                    <td><span class="online-status ${isOnline ? 'online' : 'offline'}"></span> ${isOnline ? 'Online' : 'Offline'}</td>
+                    <td>
+                        <button class="action-btn" onclick="adminEditUser('${user.token}')">Edit</button>
+                        ${!isAdmin ? `<button class="action-btn delete" onclick="adminDeleteUser('${user.token}')">Hapus</button>` : ''}
+                    </td>
+                `;
+                
+                userList.appendChild(row);
+            });
+        }
+        
+        // Fungsi untuk admin mengedit user
+        function adminEditUser(token) {
+            const user = users.find(u => u.token === token);
+            if (!user) return;
+            
+            const isAdmin = user.token.startsWith('tk_admin_') || user.token.startsWith('tk_superadmin_');
+            if (isAdmin && currentUser.token !== user.token) {
+                alert('Anda tidak dapat mengedit admin lain!');
+                return;
+            }
+            
+            const newDays = prompt(`Edit masa aktif untuk user ${user.username} (token: ${token})`, user.expiryDays);
+            
+            if (newDays !== null && !isNaN(newDays) && newDays >= 0) {
+                user.expiryDays = parseInt(newDays);
+                localStorage.setItem('gameAppUsers', JSON.stringify(users));
+                alert('Masa aktif berhasil diupdate!');
+                updateUserList();
+                
+                // Jika user yang sedang login diupdate, refresh UI
+                if (currentUser.token === token) {
+                    currentUser.expiryDays = user.expiryDays;
+                    updateUI();
+                }
+            }
+        }
+        
+        // Fungsi untuk admin menghapus user
+        function adminDeleteUser(token) {
+            const user = users.find(u => u.token === token);
+            if (!user) return;
+            
+            const isAdmin = user.token.startsWith('tk_admin_') || user.token.startsWith('tk_superadmin_');
+            if (isAdmin) {
+                alert('Tidak dapat menghapus akun admin!');
+                return;
+            }
+            
+            if (confirm('Apakah Anda yakin ingin menghapus user ini?')) {
+                users = users.filter(u => u.token !== token);
+                localStorage.setItem('gameAppUsers', JSON.stringify(users));
+                alert('User berhasil dihapus!');
+                updateUserList();
+            }
         }
 
         // Fungsi untuk menyimpan pengaturan
@@ -722,9 +1754,59 @@
                 case 'settings':
                     pageTitle.textContent = 'Pengaturan';
                     break;
+                case 'admin':
+                    pageTitle.textContent = 'Admin Panel';
+                    // Update daftar user saat membuka panel admin
+                    updateUserList();
+                    break;
                 case 'download':
                     pageTitle.textContent = 'Download Cheat';
                     break;
+            }
+
+            // On mobile, close sidebar after selection
+            if (window.innerWidth < 992) {
+                document.getElementById('sidebar').classList.remove('active');
+            }
+        }
+
+        // Fungsi untuk beralih ke tab login
+        function switchToLogin() {
+            document.getElementById('loginTab').classList.add('active');
+            document.getElementById('registerTab').classList.remove('active');
+            document.getElementById('loginForm').classList.add('active');
+            document.getElementById('registerForm').classList.remove('active');
+            document.getElementById('forgotPasswordForm').classList.remove('active');
+        }
+
+        // Fungsi untuk menampilkan form "Lupa Password"
+        function showForgotPasswordForm() {
+            document.getElementById('loginForm').classList.remove('active');
+            document.getElementById('registerForm').classList.remove('active');
+            document.getElementById('forgotPasswordForm').classList.add('active');
+            document.getElementById('loginTab').classList.remove('active');
+            document.getElementById('registerTab').classList.remove('active');
+        }
+
+        // Fungsi untuk menangani proses lupa password
+        function forgotPassword() {
+            const token = document.getElementById('forgotToken').value;
+            const newPassword = document.getElementById('newPasswordForgot').value;
+
+            if (!token || !newPassword) {
+                alert('Semua field harus diisi!');
+                return;
+            }
+
+            const userToReset = users.find(user => user.token === token);
+
+            if (userToReset) {
+                userToReset.password = newPassword;
+                localStorage.setItem('gameAppUsers', JSON.stringify(users));
+                alert('Password berhasil direset! Silakan login dengan password baru Anda.');
+                switchToLogin();
+            } else {
+                alert('Token tidak valid!');
             }
         }
 
@@ -736,9 +1818,61 @@
             document.getElementById('currentTime').textContent = now.toLocaleTimeString('id-ID');
         }
 
+        // Fungsi untuk membuat efek partikel
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            particlesContainer.innerHTML = '';
+
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+
+                // Random position
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+
+                // Random size
+                const size = Math.random() * 3 + 2;
+
+                // Random animation duration
+                const duration = Math.random() * 10 + 10;
+
+                // Random delay
+                const delay = Math.random() * 5;
+
+                particle.style.left = `${posX}vw`;
+                particle.style.top = `${posY}vh`;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.animationDuration = `${duration}s`;
+                particle.style.animationDelay = `${delay}s`;
+
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Toggle sidebar on mobile
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+
         // Inisialisasi saat halaman dimuat
         document.addEventListener('DOMContentLoaded', function() {
             initAdminUser();
+
+            // Setup tab auth
+            document.getElementById('loginTab').addEventListener('click', function() {
+                switchToLogin();
+            });
+
+            document.getElementById('registerTab').addEventListener('click', function() {
+                document.getElementById('loginTab').classList.remove('active');
+                document.getElementById('registerTab').classList.add('active');
+                document.getElementById('loginForm').classList.remove('active');
+                document.getElementById('registerForm').classList.add('active');
+            });
 
             // Setup navigation
             document.querySelectorAll('.nav-link').forEach(link => {
@@ -749,21 +1883,21 @@
                 });
             });
 
-            // Setup logout button
-            document.getElementById('logoutBtn').addEventListener('click', function(e) {
-                e.preventDefault();
-                logout();
-            });
-
             // Update waktu setiap detik
             setInterval(updateDateTime, 1000);
             updateDateTime();
 
-            // Cek jika sudah login
-            if (currentUser) {
-                document.getElementById('authContainer').style.display = 'none';
-                updateUI();
-            }
+            // Hide main content and sidebar initially
+            document.querySelector('.main-content').style.display = 'none';
+            document.getElementById('sidebar').style.display = 'none';
+
+            // Sembunyikan menu admin secara default
+            document.querySelectorAll('.admin-only').forEach(el => {
+                el.style.display = 'none';
+            });
+
+            // Create particles for auth screen
+            createParticles();
         });
     </script>
 </body>
