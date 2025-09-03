@@ -1177,27 +1177,29 @@
             </div>
 
             <div class="section" id="download">
-                <h2><i class="fas fa-download"></i>Download Cheat</h2>
-                <p>Pilih Cheat favorit Anda dan unduh untuk pengalaman bermain yang seru.</p>
-
-                <div class="game-grid">
+    <h2><i class="fas fa-download"></i> Download Cheat</h2>
+    <p>Pilih Cheat favorit Anda dan unduh untuk pengalaman bermain yang seru.</p>
+    <div id="downloadWarning" style="display: none; color: var(--offline-color); margin-bottom: 20px; font-weight: 500;">
+        Masa aktif Anda telah habis. Hubungi admin untuk memperpanjang masa aktif.
+    </div>
+    <div class="game-grid">
                     <div class="game-card">
-                        <div class="game-header">
-                            <h3>Cheat V1.1 Last Update</h3>
-                        </div>
-                        <div class="game-body">
-                            <div class="game-image">
-                                <img src="./surce/c1.jpeg" onerror="this.src='https://via.placeholder.com/300x180/1e88e5/ffffff?text=Cheat+V1.1'">
-                            </div>
-                            <p>Cheat yang berbeda dari Cheat Gratis.</p>
-                            <div class="game-actions">
-                                <button class="btn btn-outline"><i class="fas fa-info"></i> Info</button>
-                                <a href="./cit-27@$$$pb7222!.html" class="btn">
-                                    <i class="fas fa-download"></i> Download
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+    <div class="game-header">
+        <h3>Cheat V1.1 Last Update</h3>
+    </div>
+    <div class="game-body">
+        <div class="game-image">
+            <img src="./surce/c1.jpeg" onerror="this.src='https://via.placeholder.com/300x180/1e88e5/ffffff?text=Cheat+V1.1'">
+        </div>
+        <p>Cheat yang berbeda dari Cheat Gratis.</p>
+        <div class="game-actions">
+            <button class="btn btn-outline"><i class="fas fa-info"></i> Info</button>
+            <button class="btn" onclick="downloadCheat('./cit-27@$$$pb7222!.html')">
+                <i class="fas fa-download"></i> Download
+            </button>
+        </div>
+    </div>
+</div>
 
                     <div class="game-card">
                         <div class="game-header">
@@ -1208,12 +1210,13 @@
                                 <img src="./surce/c2.jpeg" onerror="this.src='https://via.placeholder.com/300x180/2196f3/ffffff?text=Cheat+V2.2'">
                             </div>
                             <p>Cheat lebih praktis</p>
-                            <div class="game-actions">
-                                <button class="btn btn-outline"><i class="fas fa-info"></i> Info</button>
-                                <a href="./cit-27@$$$pb7222!.html" class="btn">
-                                    <i class="fas fa-download"></i> Download
-                                </a>
-                            </div>
+                            <!-- Dalam bagian game-card -->
+<div class="game-actions">
+    <button class="btn btn-outline"><i class="fas fa-info"></i> Info</button>
+    <button class="btn" onclick="downloadCheat('./cit-27@$$$pb7222!.html')">
+        <i class="fas fa-download"></i> Download
+    </button>
+</div>
                         </div>
                     </div>
 
@@ -1926,6 +1929,112 @@
             }
         }
 
+function downloadCheat(url) {
+    if (!currentUser) {
+        alert('Silakan login terlebih dahulu!');
+        return;
+    }
+
+    if (currentUser.expiryDays <= 0) {
+        alert('Masa aktif Anda telah habis. Hubungi admin untuk memperpanjang masa aktif.');
+        return;
+    }
+
+    // Jika masa aktif masih ada, arahkan ke URL unduhan
+    window.location.href = url;
+}
+
+function showSection(sectionId) {
+    document.querySelectorAll('.section').forEach(section => {
+        section.classList.remove('active');
+    });
+
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+    });
+
+    document.getElementById(sectionId).classList.add('active');
+    document.querySelector(`.nav-link[href="#${sectionId}"]`).classList.add('active');
+
+    // Update page title
+    const pageTitle = document.getElementById('pageTitle');
+    switch(sectionId) {
+        case 'dashboard':
+            pageTitle.textContent = 'Dashboard';
+            break;
+        case 'profile':
+            pageTitle.textContent = 'Profil Pengguna';
+            break;
+        case 'settings':
+            pageTitle.textContent = 'Pengaturan';
+            break;
+        case 'admin':
+            pageTitle.textContent = 'Admin Panel';
+            updateUserList();
+            break;
+        case 'download':
+            pageTitle.textContent = 'Download Cheat';
+            // Tampilkan peringatan jika masa aktif habis
+            const downloadWarning = document.getElementById('downloadWarning');
+            if (currentUser && currentUser.expiryDays <= 0) {
+                downloadWarning.style.display = 'block';
+            } else {
+                downloadWarning.style.display = 'none';
+            }
+            break;
+    }
+
+    // On mobile, close sidebar after selection
+    if (window.innerWidth < 992) {
+        document.getElementById('sidebar').classList.remove('active');
+    }
+}
+
+
+function updateExpiryDays() {
+    if (!currentUser) return;
+
+    const lastUpdate = localStorage.getItem('lastExpiryUpdate');
+    const today = new Date().toLocaleDateString('id-ID');
+
+    if (lastUpdate !== today) {
+        // Kurangi masa aktif untuk semua user non-admin
+        users = users.map(user => {
+            if (!user.token.includes('tk_admin') && user.expiryDays > 0) {
+                user.expiryDays -= 1;
+            }
+            return user;
+        });
+
+        // Update currentUser jika diperlukan
+        if (!currentUser.token.includes('tk_admin') && currentUser.expiryDays > 0) {
+            currentUser.expiryDays -= 1;
+        }
+
+        localStorage.setItem('gameAppUsers', JSON.stringify(users));
+        localStorage.setItem('lastExpiryUpdate', today);
+        updateUI();
+    }
+}
+
+function updateDateTime() {
+    const now = new Date();
+    const options = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    };
+    const timeOptions = { 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit', 
+        timeZone: 'Asia/Jakarta' // Zona waktu WIB
+    };
+    document.getElementById('currentDate').textContent = now.toLocaleDateString('id-ID', options);
+    document.getElementById('currentTime').textContent = now.toLocaleTimeString('id-ID', timeOptions);
+}
+
         // Fungsi untuk memperbarui tanggal dan waktu
         function updateDateTime() {
             const now = new Date();
@@ -1968,6 +2077,33 @@
                 particlesContainer.appendChild(particle);
             }
         }
+
+document.addEventListener('DOMContentLoaded', function() {
+    initAdminUser();
+
+    // Periksa status online semua user
+    const now = Date.now();
+    users = users.map(user => {
+        if (user.lastActive && (now - user.lastActive) > 300000) { // 5 menit
+            user.isOnline = false;
+        }
+        return user;
+    });
+    localStorage.setItem('gameAppUsers', JSON.stringify(users));
+
+    // Perbarui masa aktif
+    updateExpiryDays();
+
+    // Setup tab auth
+    document.getElementById('loginTab').addEventListener('click', function() {
+        switchToLogin();
+    });
+
+    // ... (kode lainnya tetap sama)
+
+    // Perbarui masa aktif setiap 4 jam
+    setInterval(updateExpiryDays, 4 * 60 * 60 * 1000); // 4 jam
+});
 
         // Toggle sidebar on mobile
         document.getElementById('menuToggle').addEventListener('click', function() {
