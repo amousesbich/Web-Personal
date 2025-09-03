@@ -920,6 +920,67 @@
             background-color: rgba(244, 67, 54, 0.15);
             color: var(--offline-color);
         }
+
+        /* Style untuk token selector */
+        .token-selector {
+            position: relative;
+        }
+
+        .token-dropdown {
+            width: 100%;
+            padding: 15px 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231e88e5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px;
+        }
+
+        .token-dropdown:focus {
+            border-color: var(--primary-blue);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.2), 0 0 15px var(--glow-color);
+        }
+
+        .token-status {
+            margin-top: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+
+        .token-available {
+            color: var(--online-color);
+        }
+
+        .token-used {
+            color: var(--offline-color);
+        }
+
+        .refresh-tokens {
+            margin-top: 10px;
+            background: #f5f5f5;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .refresh-tokens i {
+            margin-right: 5px;
+        }
+
+        .refresh-tokens:hover {
+            background: #e0e0e0;
+        }
     </style>
 </head>
 <body>
@@ -1079,7 +1140,7 @@
             <div class="section admin-only" id="admin">
                 <h2><i class="fas fa-user-shield"></i> Panel Admin</h2>
                 <p>Kelola masa aktif semua user dengan menggunakan token mereka.</p>
-                
+
                 <div class="admin-form">
                     <h3><i class="fas fa-plus-circle"></i> Tambah Masa Aktif User</h3>
                     <div class="form-group">
@@ -1094,7 +1155,7 @@
                         <i class="fas fa-plus"></i> Tambah Masa Aktif
                     </button>
                 </div>
-                
+
                 <div style="margin-top: 30px;">
                     <h3><i class="fas fa-users"></i> Daftar Semua User</h3>
                     <table class="admin-table">
@@ -1216,9 +1277,18 @@
                     <label for="registerPassword">Password</label>
                     <input type="password" id='registerPassword' placeholder="Buat password">
                 </div>
-                <div class="form-group">
-                    <label for="registerToken">Token</label>
-                    <input type="text" id="registerToken" placeholder="Masukkan token">
+                <div class="form-group token-selector">
+                    <label for="registerToken">Pilih Token</label>
+                    <select id="registerToken" class="token-dropdown">
+                        <option value="">-- Pilih Token --</option>
+                        <!-- Options akan diisi oleh JavaScript -->
+                    </select>
+                    <div class="token-status" id="tokenStatus">
+                        <span id="tokenStatusText">Pilih token yang tersedia</span>
+                    </div>
+                    <button type="button" class="refresh-tokens" onclick="loadAvailableTokens()">
+                        <i class="fas fa-sync-alt"></i> Refresh Token
+                    </button>
                 </div>
                 <button type="button" class="btn full-width" onclick="register()">
                     <i class="fas fa-user-plus"></i> Daftar
@@ -1315,11 +1385,43 @@
         let currentUser = null;
         let onlineStatusInterval = null;
 
-        // Inisialisasi admin user jika belum ada
+        // Fungsi untuk memuat token yang tersedia ke dropdown
+        function loadAvailableTokens() {
+            const tokenDropdown = document.getElementById('registerToken');
+            const tokenStatus = document.getElementById('tokenStatusText');
+            
+            // Kosongkan dropdown
+            tokenDropdown.innerHTML = '<option value="">-- Pilih Token --</option>';
+            
+            // Hitung token yang sudah digunakan
+            const usedTokens = users.map(user => user.token);
+            
+            // Filter token yang masih tersedia
+            const availableTokens = predefinedTokens.filter(token => !usedTokens.includes(token));
+            
+            if (availableTokens.length === 0) {
+                tokenStatus.textContent = 'Tidak ada token yang tersedia';
+                tokenStatus.className = 'token-used';
+                return;
+            }
+            
+            // Tambahkan token yang tersedia ke dropdown
+            availableTokens.forEach(token => {
+                const option = document.createElement('option');
+                option.value = token;
+                option.textContent = token;
+                tokenDropdown.appendChild(option);
+            });
+            
+            tokenStatus.textContent = `${availableTokens.length} token tersedia`;
+            tokenStatus.className = 'token-available';
+        }
+
+        // Fungsi untuk inisialisasi admin user jika belum ada
         function initAdminUser() {
             const adminExists1 = users.some(user => user.username === 'admin');
             const adminExists2 = users.some(user => user.username === 'admin2');
-            
+
             if (!adminExists1) {
                 users.push({
                     username: 'admin',
@@ -1331,7 +1433,7 @@
                     isOnline: false
                 });
             }
-            
+
             if (!adminExists2) {
                 users.push({
                     username: 'admin2',
@@ -1343,7 +1445,7 @@
                     isOnline: false
                 });
             }
-            
+
             localStorage.setItem('gameAppUsers', JSON.stringify(users));
         }
 
@@ -1358,7 +1460,7 @@
                 // Update status online
                 user.isOnline = true;
                 user.lastActive = Date.now();
-                
+
                 currentUser = user;
                 document.getElementById('authContainer').style.display = 'none';
                 document.querySelector('.main-content').style.display = 'block';
@@ -1374,10 +1476,10 @@
 
                 // Update status online di localStorage
                 localStorage.setItem('gameAppUsers', JSON.stringify(users));
-                
+
                 // Create floating particles
                 createParticles();
-                
+
                 // Mulai interval untuk update status online
                 startOnlineStatusInterval();
             } else {
@@ -1388,7 +1490,7 @@
         // Fungsi untuk memulai interval update status online
         function startOnlineStatusInterval() {
             if (onlineStatusInterval) clearInterval(onlineStatusInterval);
-            
+
             onlineStatusInterval = setInterval(() => {
                 if (currentUser) {
                     // Update waktu aktif terakhir untuk user yang sedang login
@@ -1397,7 +1499,7 @@
                         users[userIndex].lastActive = Date.now();
                         users[userIndex].isOnline = true;
                         localStorage.setItem('gameAppUsers', JSON.stringify(users));
-                        
+
                         // Update UI jika di halaman admin
                         if (document.getElementById('admin').classList.contains('active')) {
                             updateUserList();
@@ -1417,7 +1519,7 @@
                     localStorage.setItem('gameAppUsers', JSON.stringify(users));
                 }
             }
-            
+
             currentUser = null;
             document.getElementById('authContainer').style.display = 'flex';
             document.querySelector('.main-content').style.display = 'none';
@@ -1447,11 +1549,11 @@
 
             document.getElementById('userAvatar').textContent = currentUser.username.charAt(0).toUpperCase();
             document.getElementById('userName').textContent = currentUser.username;
-            
+
             // Update status indicator
             const statusIndicator = document.querySelector('#userStatus .status-indicator');
             const statusText = document.querySelector('#userStatus span:last-child');
-            
+
             if (currentUser.isOnline) {
                 statusIndicator.className = 'status-indicator status-online';
                 statusText.textContent = 'Status: Online';
@@ -1481,17 +1583,17 @@
         function updateUserList() {
             const userList = document.getElementById('userList');
             userList.innerHTML = '';
-            
+
             // Urutkan user: online di atas, offline di bawah
             const sortedUsers = [...users].sort((a, b) => {
                 if (a.isOnline && !b.isOnline) return -1;
                 if (!a.isOnline && b.isOnline) return 1;
                 return 0;
             });
-            
+
             sortedUsers.forEach(user => {
                 const row = document.createElement('tr');
-                
+
                 // Format waktu terakhir aktif
                 const lastActive = new Date(user.lastActive);
                 const now = new Date();
@@ -1499,7 +1601,7 @@
                 const diffMins = Math.floor(diffMs / 60000);
                 const diffHours = Math.floor(diffMs / 3600000);
                 const diffDays = Math.floor(diffMs / 86400000);
-                
+
                 let lastActiveText = '';
                 if (user.isOnline) {
                     lastActiveText = 'Sekarang';
@@ -1510,7 +1612,7 @@
                 } else {
                     lastActiveText = `${diffDays} hari yang lalu`;
                 }
-                
+
                 row.innerHTML = `
                     <td>${user.username}</td>
                     <td>${user.token}</td>
@@ -1529,7 +1631,7 @@
                           ''}
                     </td>
                 `;
-                
+
                 userList.appendChild(row);
             });
         }
@@ -1575,6 +1677,9 @@
             localStorage.setItem('gameAppUsers', JSON.stringify(users));
             alert('Registrasi berhasil! Silakan login.');
             switchToLogin();
+            
+            // Muat ulang token yang tersedia
+            loadAvailableTokens();
         }
 
         // Fungsi untuk reset password
@@ -1622,55 +1727,55 @@
                 alert('Hanya admin yang dapat menggunakan fitur ini!');
                 return;
             }
-            
+
             const userToken = document.getElementById('adminUserToken').value;
             const daysToAdd = parseInt(document.getElementById('adminAddDays').value);
-            
+
             if (!userToken || isNaN(daysToAdd) || daysToAdd <= 0) {
                 alert('Masukkan token user dan jumlah hari yang valid!');
                 return;
             }
-            
+
             const user = users.find(u => u.token === userToken);
             if (!user) {
                 alert('User dengan token tersebut tidak ditemukan!');
                 return;
             }
-            
+
             user.expiryDays += daysToAdd;
-            
+
             // Update di localStorage
             localStorage.setItem('gameAppUsers', JSON.stringify(users));
-            
+
             alert(`Berhasil menambahkan ${daysToAdd} hari untuk user dengan token ${userToken}. Masa aktif sekarang: ${user.expiryDays} hari.`);
-            
+
             // Reset form
             document.getElementById('adminUserToken').value = '';
             document.getElementById('adminAddDays').value = '';
-            
+
             // Update daftar user
             updateUserList();
-            
+
             // Jika user yang sedang login diupdate, refresh UI
             if (currentUser.token === userToken) {
                 currentUser.expiryDays = user.expiryDays;
                 updateUI();
             }
         }
-        
+
         // Fungsi untuk admin mengedit user
         function adminEditUser(token) {
             const user = users.find(u => u.token === token);
             if (!user) return;
-            
+
             const newDays = prompt(`Edit masa aktif untuk user ${user.username} (token: ${token})`, user.expiryDays);
-            
+
             if (newDays !== null && !isNaN(newDays) && newDays >= 0) {
                 user.expiryDays = parseInt(newDays);
                 localStorage.setItem('gameAppUsers', JSON.stringify(users));
                 alert('Masa aktif berhasil diupdate!');
                 updateUserList();
-                
+
                 // Jika user yang sedang login diupdate, refresh UI
                 if (currentUser.token === token) {
                     currentUser.expiryDays = user.expiryDays;
@@ -1678,19 +1783,22 @@
                 }
             }
         }
-        
+
         // Fungsi untuk admin menghapus user
         function adminDeleteUser(token) {
             if (token.includes('tk_admin')) {
                 alert('Tidak dapat menghapus akun admin!');
                 return;
             }
-            
+
             if (confirm('Apakah Anda yakin ingin menghapus user ini?')) {
                 users = users.filter(u => u.token !== token);
                 localStorage.setItem('gameAppUsers', JSON.stringify(users));
                 alert('User berhasil dihapus!');
                 updateUserList();
+                
+                // Muat ulang token yang tersedia
+                loadAvailableTokens();
             }
         }
 
@@ -1732,6 +1840,9 @@
 
             updateUI();
             alert('Pengaturan berhasil disimpan!');
+            
+            // Muat ulang token yang tersedia
+            loadAvailableTokens();
         }
 
         // Fungsi untuk menampilkan section
@@ -1887,6 +1998,9 @@
                 document.getElementById('registerTab').classList.add('active');
                 document.getElementById('loginForm').classList.remove('active');
                 document.getElementById('registerForm').classList.add('active');
+                
+                // Muat token yang tersedia saat beralih ke tab register
+                loadAvailableTokens();
             });
 
             // Setup navigation
